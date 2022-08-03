@@ -44,7 +44,7 @@ func (ctx *Context) GetRequest() *http.Request {
 	return ctx.request
 }
 
-func (ctx *Context) GetResponseWriter() http.ResponseWriter {
+func (ctx *Context) GetResponse() http.ResponseWriter {
 	return ctx.responseWriter
 }
 
