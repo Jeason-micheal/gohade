@@ -17,7 +17,8 @@ type Context struct {
 	request        *http.Request
 	responseWriter http.ResponseWriter
 	ctx            context.Context
-	handler        ControllerHandler
+	handlers       []ControllerHandler
+	index          int
 
 	// 是否超时标志
 	hasTimeout bool
@@ -31,6 +32,7 @@ func NewContext(r *http.Request, w http.ResponseWriter) *Context {
 		responseWriter: w,
 		ctx:            r.Context(),
 		writerMux:      &sync.Mutex{},
+		index:          -1, // 以-1为初始值
 	}
 }
 
@@ -86,6 +88,23 @@ func (ctx *Context) Value(key any) any {
 }
 
 // #endregion
+
+func (ctx *Context) SetHandlers(handlers []ControllerHandler) {
+	//ctx.handlers = append(ctx.handlers, handlers...)
+	ctx.handlers = handlers
+}
+
+// Next 执行下一个中间件: 需要在ServeHttp中第一次调用
+// 每个中间件中, 完成自己的业务以后也要调用
+func (ctx *Context) Next() error {
+	ctx.index++
+	if ctx.index < len(ctx.handlers) {
+		if err := ctx.handlers[ctx.index](ctx); err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 // #region query url
 
