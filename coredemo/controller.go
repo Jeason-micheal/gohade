@@ -16,7 +16,7 @@ func FooControllerHandler(c *framework.Context) error {
 
 	durationCtx, cancel := context.WithTimeout(c.BaseContext(), time.Duration(1*time.Second))
 	defer cancel()
-
+	// 业务逻辑 可以根据情况传输 finish
 	go func() {
 		defer func() {
 			if p := recover(); p != nil {
@@ -31,13 +31,13 @@ func FooControllerHandler(c *framework.Context) error {
 		c.WriterMux().Lock()
 		defer c.WriterMux().Unlock()
 		log.Println(p)
-		c.Json(500, "panic")
+		c.SetStatus(500).Json("panic")
 	case <-finish:
 		log.Println("finish")
 	case <-durationCtx.Done():
 		c.WriterMux().Lock()
 		defer c.WriterMux().Unlock()
-		c.Json(500, "time out")
+		c.SetStatus(500).Json("time out")
 		c.SetHasTimeout()
 	}
 	return nil

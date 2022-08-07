@@ -9,7 +9,7 @@ func Recovery() framework.ControllerHandler {
 		// 需要第一个设置到中间件链路中
 		defer func() {
 			if err := recover(); err != nil {
-				c.Json(500, err)
+				c.SetStatus(500).Json(err)
 			}
 		}()
 		// 使用next执行具体业务
