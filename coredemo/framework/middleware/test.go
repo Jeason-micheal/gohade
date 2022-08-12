@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"fmt"
-	"gohade/coredemo/framework"
+	"github.com/gohade/hade/framework"
 )
 
 func Test1() framework.ControllerHandler {
