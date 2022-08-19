@@ -2,13 +2,13 @@ package middleware
 
 import (
 	"context"
-	"gohade/coredemo/framework"
+	"github.com/gohade/hade/framework/gin"
 	"log"
 	"time"
 )
 
-func Timeout(d time.Duration) framework.ControllerHandler {
-	return func(c *framework.Context) error {
+func Timeout(d time.Duration) gin.HandlerFunc {
+	return func(c *gin.Context) {
 		finish := make(chan struct{}, 1)
 		panicCh := make(chan any, 1)
 		// 执行业务逻辑前预操作: 初始化超时context
@@ -30,11 +30,9 @@ func Timeout(d time.Duration) framework.ControllerHandler {
 		case <-finish:
 			log.Println("finish")
 		case <-durationCtx.Done():
-			c.SetHasTimeout()
-			c.SetStatus(500).Json("time out")
+			c.ISetStatus(500).IJson("time out")
 		case p := <-panicCh:
-			c.SetStatus(500).Json(p)
+			c.ISetStatus(500).IJson(p)
 		}
-		return nil
 	}
 }
