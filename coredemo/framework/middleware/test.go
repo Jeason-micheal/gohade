@@ -26,8 +26,8 @@ func Test2() gin.HandlerFunc {
 
 func Test3() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fmt.Println("middleware pre test2")
+		fmt.Println("middleware pre test3")
 		c.Next()
-		fmt.Println("middleware post test2")
+		fmt.Println("middleware post test3")
 	}
 }
